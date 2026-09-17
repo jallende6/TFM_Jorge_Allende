@@ -1,0 +1,5 @@
+prioridad,observaciones,clientes_distintos,riesgo_medio,clv_medio,valor_en_riesgo,gasto_real_90d,% valor en riesgo,£ en riesgo/obs
+"1 · RETENER — alto riesgo, alto valor",5105,1991,0.57,891.73,2630183.52,2070885.19,44.2,515.0
+"2 · FIDELIZAR — bajo riesgo, alto valor",3605,1012,0.2,2071.2,1003937.19,7445093.27,16.9,278.0
+"3 · DEJAR IR — alto riesgo, bajo valor",8263,2563,0.67,415.01,2262520.78,1178894.84,38.0,274.0
+"4 · MONITOREAR — bajo riesgo, bajo valor",446,202,0.29,461.17,58311.66,153283.67,1.0,131.0

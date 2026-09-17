@@ -1,0 +1,11 @@
+Feature,Rol,Definición
+recency_days,feature,Días entre la última compra y t
+frequency,feature,Facturas de COMPRA distintas en la ventana (excluye cancelaciones)
+monetary,feature,"Gasto en la ventana histórica (£, solo líneas de compra)"
+return_rate,feature,Facturas con devolución / facturas totales del cliente (0-1)
+customer_age_days,feature,Días entre primera y última compra DENTRO de la ventana
+avg_items_per_transaction,feature,Unidades compradas medias por factura de compra
+unique_products,feature,StockCodes distintos comprados
+avg_order_value,descriptiva,"monetary / frequency (£). Excluida del modelo: redundancia algebraica exacta con monetary y frequency (su VIF medido es 1,2: el motivo es conceptual, no de colinealidad)"
+churn,TARGET,"Sin ninguna COMPRA en [t, t+90d). Equivale a future_monetary_90d == 0"
+future_monetary_90d,TARGET,"Gasto en [t, t+90d) (£); 0 si no vuelve"

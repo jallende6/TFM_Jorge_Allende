@@ -1,0 +1,15 @@
+Estrategia,Capacidad,Observaciones,Precision@K,Recall@K,% valor protegido
+Por riesgo,5%,870,0.753,0.077,0.099
+Por riesgo,10%,1741,0.747,0.153,0.12
+Por riesgo,15%,2612,0.735,0.226,0.14
+Por riesgo,20%,3483,0.731,0.299,0.165
+Por riesgo,30%,5225,0.716,0.44,0.24
+Por riesgo,40%,6967,0.694,0.568,0.329
+Por riesgo,50%,8709,0.676,0.692,0.451
+Por valor esperado,5%,870,0.382,0.039,0.304
+Por valor esperado,10%,1741,0.368,0.075,0.39
+Por valor esperado,15%,2612,0.359,0.11,0.455
+Por valor esperado,20%,3483,0.362,0.148,0.517
+Por valor esperado,30%,5225,0.366,0.225,0.612
+Por valor esperado,40%,6967,0.371,0.304,0.699
+Por valor esperado,50%,8709,0.389,0.398,0.777

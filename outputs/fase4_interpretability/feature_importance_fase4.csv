@@ -1,0 +1,8 @@
+Feature,SHAP medio |·|,% del total
+frequency,0.3508,32.1
+customer_age_days,0.3066,28.1
+monetary,0.1654,15.1
+recency_days,0.119,10.9
+unique_products,0.0879,8.0
+return_rate,0.0428,3.9
+avg_items_per_transaction,0.0198,1.8

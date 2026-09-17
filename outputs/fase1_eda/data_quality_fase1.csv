@@ -1,0 +1,11 @@
+metrica,valor
+filas_crudas,1067371.0
+filas_limpias,824355.0
+clientes_limpios,5940.0
+pct_filas_sin_customer_id,22.8
+ingresos_totales,19434864.65
+ingresos_anonimos,2786572.26
+pct_ingresos_anonimos,14.3
+n_ventanas,16.0
+churn_min_pct,38.4
+churn_max_pct,62.4

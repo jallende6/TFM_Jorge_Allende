@@ -1,0 +1,39 @@
+# Entorno completo para reproducir la cadena de notebooks (Fases 1-5) del TFM.
+#
+# REQUIERE PYTHON >= 3.11 (probado en 3.11.15). Con 3.10 o anterior, pip falla al
+# resolver pandas/numpy con un error que no dice cuál es la causa real.
+#
+# Versiones fijadas al entorno canónico: reproducen las cifras
+# exactas del trabajo. Con otras versiones —especialmente de scikit-learn— el umbral de
+# clasificación se desplaza ligeramente; el análisis sigue siendo válido siempre que se
+# reejecute la CADENA COMPLETA en el mismo entorno. Lo que rompe la coherencia sin dar
+# ningún error es ejecutar unas fases en un entorno y otras en otro.
+#
+# Para servir únicamente el prototipo de scoring (sin reentrenar nada), basta con
+# requirements-api.txt — es un subconjunto de este archivo.
+#
+# Instalación:
+#   python -m venv .venv && source .venv/bin/activate
+#   pip install -r requirements.txt
+
+pandas==3.0.2
+numpy==2.4.4
+scikit-learn==1.8.0
+lightgbm==4.7.0
+xgboost==3.2.0
+shap==0.51.0
+matplotlib==3.10.8
+seaborn==0.13.2
+
+# Lectura del Excel que publica UCI (scripts/preparar_datos.py). El dataset no se
+# distribuye como CSV: son dos hojas de un .xlsx que hay que concatenar.
+openpyxl==3.1.5
+
+# Para abrir y ejecutar los notebooks
+jupyterlab==4.5.6
+ipykernel==7.2.0
+
+# Servicio del prototipo (ver requirements-api.txt para versiones exactas)
+fastapi==0.141.1
+uvicorn[standard]==0.52.4
+pydantic==2.13.4

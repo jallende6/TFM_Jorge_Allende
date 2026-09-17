@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Scoring de Lealtad del Cliente — TFM</title>
+<style>
+  :root {
+    --bg: #f3f4f6;
+    --card: #ffffff;
+    --ink: #1a1f2b;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --accent: #0f3460;
+    --accent-light: #eef2f9;
+    /* Misma paleta que src/tfm_pipeline.py::COLORES_CUADRANTE — el color de cada
+       decisión no puede divergir entre el prototipo y los gráficos de las Fases 3b/4/5. */
+    --retener: #d62728;
+    --fidelizar: #2ca02c;
+    --dejarir: #ff7f0e;
+    --monitorear: #7f7f7f;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px 80px;
+  }
+
+  main { width: 100%; max-width: 640px; }
+
+  header { text-align: center; margin-bottom: 32px; }
+
+  header .eyebrow {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  header h1 {
+    font-size: 26px;
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+  }
+
+  header p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+  }
+
+  .search-row {
+    display: flex;
+    gap: 10px;
+  }
+
+  .search-row input {
+    flex: 1;
+    padding: 12px 14px;
+    font-size: 15px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .search-row input:focus { border-color: var(--accent); }
+
+  .search-row button {
+    padding: 12px 20px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    background: var(--accent);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    white-space: nowrap;
+  }
+
+  .search-row button:hover { opacity: 0.9; }
+  .search-row button:disabled { opacity: 0.5; cursor: default; }
+
+  .hint {
+    margin: 10px 2px 0;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  .hint button {
+    border: none;
+    background: none;
+    color: var(--accent);
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    font-size: 12.5px;
+    text-decoration: underline;
+  }
+
+  #result-area { margin-top: 20px; }
+
+  .state-msg {
+    text-align: center;
+    padding: 28px 16px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .state-msg.error {
+    color: #9a3412;
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    border-radius: 12px;
+  }
+
+  .spinner {
+    width: 22px; height: 22px;
+    margin: 0 auto 12px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .decision-banner {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 20px;
+    border-radius: 12px;
+    color: #fff;
+    margin-bottom: 20px;
+  }
+
+  .decision-banner .dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.85);
+    flex-shrink: 0;
+  }
+
+  .decision-banner .label { font-size: 11px; opacity: 0.85; letter-spacing: 0.06em; text-transform: uppercase; }
+  .decision-banner .decision { font-size: 19px; font-weight: 700; margin-top: 2px; }
+
+  .gauge-row {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 18px 4px 22px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 18px;
+  }
+
+  .gauge-num { font-size: 34px; font-weight: 700; min-width: 92px; }
+  .gauge-num small { font-size: 15px; font-weight: 600; color: var(--muted); }
+
+  .gauge-bar-wrap { flex: 1; }
+  .gauge-bar-label { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--muted); margin-bottom: 6px; }
+  .gauge-bar-track { height: 10px; background: var(--border); border-radius: 6px; overflow: hidden; }
+  .gauge-bar-fill { height: 100%; border-radius: 6px; transition: width 0.4s ease; }
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .metric {
+    background: var(--accent-light);
+    border-radius: 12px;
+    padding: 14px 12px;
+    text-align: center;
+  }
+
+  .metric .metric-label {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+
+  .metric .metric-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .action-box {
+    background: #f9fafb;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+
+  .action-box strong { display: block; margin-bottom: 4px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+
+  .meta-line {
+    margin-top: 14px;
+    font-size: 12px;
+    color: var(--muted);
+    text-align: right;
+  }
+
+  footer {
+    max-width: 640px;
+    margin: 28px auto 0;
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  #model-badge {
+    display: inline-block;
+    margin-top: 6px;
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">TFM · UCM · Online Retail II</div>
+    <h1>Scoring de Lealtad del Cliente</h1>
+    <p>Riesgo de churn a 90 días, valor esperado del cliente y decisión de retención — en tiempo real.</p>
+  </header>
+
+  <div class="card">
+    <div class="search-row">
+      <input
+        id="customer-id"
+        type="number"
+        inputmode="numeric"
+        placeholder="Customer ID (p. ej. 16062)"
+        autofocus
+      />
+      <button id="score-btn" type="button">Calcular score</button>
+    </div>
+    <p class="hint">
+      ¿No tienes uno a mano? <button id="try-example" type="button">Probar con el cliente 16062</button>
+    </p>
+
+    <div id="result-area"></div>
+  </div>
+
+  <footer>
+    Fase 8 — Productivización · API: <a href="/docs" target="_blank" rel="noopener">documentación Swagger</a>
+    <div id="model-badge"></div>
+  </footer>
+</main>
+
+<script>
+  const DECISION_META = {
+    RETENER:    { color: 'var(--retener)',    icon: '⚠' },
+    FIDELIZAR:  { color: 'var(--fidelizar)',  icon: '★' },
+    'DEJAR IR': { color: 'var(--dejarir)',    icon: '↘' },
+    MONITOREAR: { color: 'var(--monitorear)', icon: '·' },
+  };
+
+  const fmtGBP = (n) => '£' + Number(n).toLocaleString('en-GB', { maximumFractionDigits: 0 });
+  const fmtPct = (n) => (Number(n) * 100).toFixed(1) + '%';
+
+  const $ = (sel) => document.querySelector(sel);
+  const resultArea = $('#result-area');
+  const input = $('#customer-id');
+  const btn = $('#score-btn');
+
+  function renderState(html) {
+    resultArea.innerHTML = html;
+  }
+
+  function renderLoading() {
+    renderState(`
+      <div class="state-msg">
+        <div class="spinner"></div>
+        Calculando score…
+      </div>
+    `);
+  }
+
+  function renderError(message) {
+    renderState(`<div class="state-msg error">${message}</div>`);
+  }
+
+  function renderResult(data, thresholdHint) {
+    const meta = DECISION_META[data.decision] || DECISION_META.MONITOREAR;
+    const riskPct = Number(data.riesgo_churn_90d) * 100;
+
+    renderState(`
+      <div class="decision-banner" style="background:${meta.color}">
+        <span class="dot"></span>
+        <div>
+          <div class="label">Decisión de retención</div>
+          <div class="decision">${meta.icon} ${data.decision}</div>
+        </div>
+      </div>
+
+      <div class="gauge-row">
+        <div class="gauge-num">${fmtPct(data.riesgo_churn_90d)}<br/><small>riesgo churn 90d</small></div>
+        <div class="gauge-bar-wrap">
+          <div class="gauge-bar-label"><span>0%</span><span>100%</span></div>
+          <div class="gauge-bar-track">
+            <div class="gauge-bar-fill" style="width:${riskPct}%; background:${meta.color}"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric">
+          <div class="metric-label">CLV si vuelve</div>
+          <div class="metric-value">${fmtGBP(data.clv_si_vuelve)}</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Valor esperado</div>
+          <div class="metric-value">${fmtGBP(data.valor_esperado)}</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Valor en riesgo</div>
+          <div class="metric-value">${fmtGBP(data.valor_en_riesgo)}</div>
+        </div>
+      </div>
+
+      <div class="action-box">
+        <strong>Acción recomendada</strong>
+        ${data.accion}
+      </div>
+
+      <div class="meta-line">
+        Cliente ${data.customer_id} · a fecha ${data.as_of_date}
+      </div>
+    `);
+  }
+
+  async function loadHealth() {
+    try {
+      const res = await fetch('/health');
+      if (!res.ok) return;
+      const h = await res.json();
+      $('#model-badge').textContent =
+        `Modelo churn: ${h.modelo_churn} (umbral ${h.umbral_churn}) · Modelo CLV: ${h.modelo_clv}`;
+    } catch (e) { /* silencioso: el badge es informativo, no crítico */ }
+  }
+
+  async function runScore(customerId) {
+    if (!customerId) {
+      renderError('Ingresa un Customer ID.');
+      return;
+    }
+    btn.disabled = true;
+    renderLoading();
+    try {
+      const res = await fetch(`/score/${encodeURIComponent(customerId)}`);
+      if (!res.ok) {
+        let detail = `Error ${res.status}`;
+        try {
+          const body = await res.json();
+          if (body && body.detail) detail = body.detail;
+        } catch (e) { /* respuesta sin JSON */ }
+        renderError(detail);
+        return;
+      }
+      const data = await res.json();
+      renderResult(data);
+    } catch (e) {
+      renderError('No se pudo conectar con el API. ¿Está corriendo el servicio (uvicorn / docker run)?');
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  btn.addEventListener('click', () => runScore(input.value.trim()));
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') runScore(input.value.trim()); });
+  $('#try-example').addEventListener('click', () => { input.value = '16062'; runScore('16062'); });
+
+  loadHealth();
+</script>
+</body>
+</html>

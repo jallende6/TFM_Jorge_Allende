@@ -1,0 +1,8 @@
+Feature,Coeficiente,Odds ratio,Efecto
+frequency,-0.3992763184782652,0.671,reduce churn
+customer_age_days,-0.23724007668430747,0.789,reduce churn
+monetary,-0.19497099309264743,0.823,reduce churn
+unique_products,-0.12223749061499962,0.885,reduce churn
+recency_days,0.11106296239550052,1.117,aumenta churn
+return_rate,-0.05722807636725122,0.944,reduce churn
+avg_items_per_transaction,-0.03761697492292277,0.963,reduce churn

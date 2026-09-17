@@ -1,0 +1,5 @@
+Modelo,CV ROC-AUC,± sd (folds),Test ROC-AUC,Test PR-AUC
+Logistic Regression,0.7325,0.0102,0.747,0.693
+Random Forest,0.7353,0.0102,0.749,0.692
+LightGBM,0.7352,0.0093,0.749,0.695
+XGBoost *,0.7356,0.0095,0.749,0.693

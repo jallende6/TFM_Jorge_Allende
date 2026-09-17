@@ -1,0 +1,29 @@
+# Dependencias del prototipo de scoring (api.py) — TFM Fase 8, Productivización.
+#
+# Versiones fijadas al entorno canónico `ml_env`: la cadena
+# de notebooks 1->5 y esta API deben ejecutarse en el MISMO entorno que produjo
+# models_fase3.pkl / models_clv.pkl. Deserializar con otra versión de scikit-learn
+# genera InconsistentVersionWarning y, potencialmente, resultados inválidos.
+#
+# Instalación (usar SIEMPRE el intérprete de ml_env de forma explícita, no
+# `conda run` en scripts/CI no interactivos: en este entorno resolvió de forma
+# silenciosa a un python de pyenv distinto con sklearn 1.5.2 — ver nota abajo):
+#
+#   /opt/homebrew/Caskroom/miniconda/base/envs/ml_env/bin/python -m pip install -r requirements-api.txt
+#
+# Arranque:
+#
+#   /opt/homebrew/Caskroom/miniconda/base/envs/ml_env/bin/python -m uvicorn api:app --reload --port 8000
+
+fastapi==0.141.1
+uvicorn[standard]==0.52.4
+pydantic==2.13.4
+pandas==3.0.2
+numpy==2.4.4
+scikit-learn==1.8.0
+lightgbm==4.7.0
+# models_fase3.pkl serializa el diccionario completo de candidatos evaluados en
+# 03_Modeling.ipynb (no sólo el ganador Logistic Regression) — al deserializar,
+# pickle necesita poder reconstruir también los objetos XGBoost aunque api.py
+# sólo invoque el modelo ganador.
+xgboost==3.2.0
