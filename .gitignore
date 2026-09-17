@@ -1,0 +1,54 @@
+# Datos crudos y limpios — 86MB y 96MB, por encima de lo razonable para git y del
+# límite de 100MB/archivo de GitHub. El dataset es público (CC BY 4.0, UCI): se
+# descarga y se regenera con 01_EDA_Online_Retail_II.ipynb. Ver README.md.
+data/raw/online_retail_II.csv
+data/processed/online_retail_II_cleaned.csv
+
+# Material de cátedra de la UCM (guía del TFM, slides de productivización): con
+# copyright institucional, no es autoría propia — no se redistribuye.
+01_Guía para el Trabajo Fin de Master - UCM - Semipresencial - BigData, Data Science  Inteligencia Artificial .pdf
+Copia de 00_UCM_BigData_Productivizar_Modelos_v1.pdf
+
+# Propuesta inicial del TFM: redundante con README.md/DECISIONES.md, que cuentan
+# la historia actualizada del proyecto.
+Jorge_Allende_Propuesta_TFM.docx
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# SO
+.DS_Store
+
+# Docker (build local)
+# Dockerfile must stay in the repo; .dockerignore is optional and local.
+.dockerignore
+*.log
+
+#scripts
+.scripts
+
+# Paquete de entrega (memoria + video + anexos). Es un build: los HTML salen de
+# nbconvert sobre notebooks/ y de pygments sobre src/. 4MB regenerables.
+entrega/
+
+# Brief de trabajo con asistente: no es contenido del TFM.
+claude.md
+
+# Cachés de herramientas
+.ruff_cache/
+
+# Salidas a nivel de fila (11MB). Derivados regenerables de notebooks/, y son
+# justo los "listados amplios de datos" que la guía pide evitar. Las tablas de
+# resultados pequeñas (model_comparison, feature_importance, etc.) sí se publican.
+outputs/fase2_features/customer_features_fase2.csv
+outputs/fase3_modeling/customer_data_with_clusters.csv
+outputs/fase3_modeling/predictions_fase3.csv
+outputs/fase3b_clv/churn_clv_priority_matrix.csv
+
+Jorge_Allende_Medrano_Analitica_Lealtad_Cliente.zip
